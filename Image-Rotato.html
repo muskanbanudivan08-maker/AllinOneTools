@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  User-agent: Googlebot
+Disallow: /nogooglebot/
+User-agent: *
+Allow: /
+Sitemap: https://www.example.com/sitemap.xml
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Resizer Tool</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f8ff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+    }
+
+    h2 {
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+
+    input[type="file"], input[type="number"], button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    img {
+        max-width: 100%;
+        margin-top: 10px;
+        border-radius: 8px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Image Resizer Tool</h2>
+    <input type="file" id="upload" accept="image/*">
+    <input type="number" id="width" placeholder="Enter width (px)">
+    <input type="number" id="height" placeholder="Enter height (px)">
+    <button onclick="resizeImage()">Resize Image</button>
+    <img id="preview" style="display:none;">
+    <a id="downloadLink" style="display:none;" download="resized-image.png">
+        <button style="margin-top:10px;">Download Resized Image</button>
+    </a>
+</div>
+
+<script>
+    let uploadedImage = null;
+
+    document.getElementById("upload").addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImage = new Image();
+                uploadedImage.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function resizeImage() {
+        const width = parseInt(document.getElementById("width").value);
+        const height = parseInt(document.getElementById("height").value);
+
+        if (!uploadedImage || !width || !height) {
+            alert("Please upload an image and enter width & height.");
+            return;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(uploadedImage, 0, 0, width, height);
+
+        const preview = document.getElementById("preview");
+        preview.src = canvas.toDataURL("image/png");
+        preview.style.display = "block";
+
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.href = canvas.toDataURL("image/png");
+        downloadLink.style.display = "inline-block";
+    }
+</script>
+
+</body>
+</html>
